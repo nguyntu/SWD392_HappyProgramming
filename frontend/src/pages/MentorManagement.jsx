@@ -10,7 +10,7 @@ import {
   setMentorVisibility
 } from '../services/mentorService'
 
-export default function MentorManagement({ onNavigateToHome }) {
+export default function MentorManagement({ currentUser, onNavigateToHome, onLogout, onRequireLogin }) {
   const [mentors, setMentors] = useState([])
   const [editing, setEditing] = useState(null)
   const [keyword, setKeyword] = useState('')
@@ -126,22 +126,46 @@ export default function MentorManagement({ onNavigateToHome }) {
                   id="btn-back-home"
                 >
                   <i className="bi bi-house-door-fill"></i>
-                  <span>Xem Trang Chủ</span>
+                  <span className="d-none d-sm-inline">Xem Trang Chủ</span>
                 </Button>
               )}
-              <span className="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill d-none d-sm-inline-flex align-items-center gap-2">
-                <span className="status-dot bg-success"></span>
-                Admin Portal
-              </span>
+              {currentUser && (
+                <div className="d-flex align-items-center gap-2 bg-white border rounded-pill px-3 py-1 shadow-sm">
+                  <div
+                    className="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                    style={{
+                      width: '26px',
+                      height: '26px',
+                      fontSize: '0.8rem',
+                      background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
+                    }}
+                  >
+                    A
+                  </div>
+                  <span className="small fw-bold text-dark d-none d-md-inline">{currentUser.fullName}</span>
+                  <span className="badge bg-danger rounded-pill">Admin</span>
+                </div>
+              )}
               <Button
                 variant="light"
                 className="border d-flex align-items-center gap-2 px-3 shadow-sm rounded-pill"
                 onClick={loadData}
                 disabled={loading}
+                title="Tải lại dữ liệu"
               >
                 <i className={`bi bi-arrow-clockwise ${loading ? 'spin' : ''}`}></i>
-                <span className="d-none d-md-inline">Tải lại</span>
               </Button>
+              {onLogout && (
+                <Button
+                  variant="outline-danger"
+                  className="rounded-pill px-3 shadow-sm d-flex align-items-center gap-1 small fw-semibold"
+                  onClick={onLogout}
+                  title="Đăng xuất"
+                >
+                  <i className="bi bi-box-arrow-right"></i>
+                  <span className="d-none d-md-inline">Đăng xuất</span>
+                </Button>
+              )}
             </div>
           </div>
         </Container>

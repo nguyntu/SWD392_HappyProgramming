@@ -27,6 +27,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(body);
     }
 
+    @ExceptionHandler(org.springframework.security.authentication.BadCredentialsException.class)
+    ResponseEntity<Map<String,Object>> badCredentials(org.springframework.security.authentication.BadCredentialsException e) {
+        return response(HttpStatus.UNAUTHORIZED, e.getMessage());
+    }
+
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    ResponseEntity<Map<String,Object>> accessDenied(org.springframework.security.access.AccessDeniedException e) {
+        return response(HttpStatus.FORBIDDEN, "Bạn không có quyền thực hiện thao tác này");
+    }
+
     private ResponseEntity<Map<String,Object>> response(HttpStatus status, String message) {
         return ResponseEntity.status(status).body(Map.of("message", message));
     }

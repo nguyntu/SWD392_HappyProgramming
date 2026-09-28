@@ -30,12 +30,31 @@ Backend: http://localhost:8081
 Frontend: http://localhost:5173
 
 ## APIs
-GET    /api/mentors?keyword=&visible=
-GET    /api/mentors/{id}
-POST   /api/mentors
-PUT    /api/mentors/{id}
-DELETE /api/mentors/{id}
-PATCH  /api/mentors/{id}/visibility?visible=true|false
+### Authentication & User
+- `POST   /api/auth/register` (Đăng ký tài khoản mới: Admin, Mentor, Học viên)
+- `POST   /api/auth/login` (Đăng nhập, trả về JWT Token và User Info)
+- `GET    /api/auth/me` (Lấy thông tin tài khoản hiện tại qua Bearer Token)
+- `POST   /api/auth/logout` (Đăng xuất)
 
-## Note
-The security filter is a structural placeholder. Once Sign in/User Authorization is implemented, replace it with the project's real authentication/JWT flow.
+### Mentors (CUD yêu cầu quyền ROLE_ADMIN)
+- `GET    /api/mentors?keyword=&visible=` (Public)
+- `GET    /api/mentors/{id}` (Public)
+- `POST   /api/mentors` (Admin only)
+- `PUT    /api/mentors/{id}` (Admin only)
+- `DELETE /api/mentors/{id}` (Admin only)
+- `PATCH  /api/mentors/{id}/visibility?visible=true|false` (Admin only)
+
+## Tài khoản mẫu mặc định (Tự động khởi tạo khi chạy backend)
+1. **Admin (Quản trị viên)**:
+   - Username: `admin`
+   - Password: `admin123`
+   - Quyền: `ROLE_ADMIN` (Toàn quyền quản lý mentor, hiển thị/ẩn, thêm, sửa, xóa)
+2. **Mentor**:
+   - Username: `mentor1`
+   - Password: `123456`
+   - Quyền: `ROLE_MENTOR`
+3. **Học viên**:
+   - Username: `student1`
+   - Password: `123456`
+   - Quyền: `ROLE_USER`
+

@@ -8,9 +8,11 @@ import {
   Badge,
   Modal,
   Spinner,
-  Alert
+  Alert,
+  Dropdown
 } from 'react-bootstrap'
 import { getMentors } from '../services/mentorService'
+import UserProfileModal from '../components/UserProfileModal'
 
 function getAvatarGradient(name = '') {
   const gradients = [
@@ -48,8 +50,9 @@ const POPULAR_SKILLS = [
   'DevOps'
 ]
 
-export default function HomePage({ onNavigateToAdmin }) {
+export default function HomePage({ currentUser, onNavigateToAdmin, onOpenAuth, onLogout }) {
   const [mentors, setMentors] = useState([])
+  const [showProfileModal, setShowProfileModal] = useState(false)
   const [loading, setLoading] = useState(false)
   const [keyword, setKeyword] = useState('')
   const [selectedSkill, setSelectedSkill] = useState('Tất cả')
@@ -149,12 +152,86 @@ export default function HomePage({ onNavigateToAdmin }) {
             <div className="d-flex align-items-center gap-2">
               <Button
                 variant="outline-primary"
-                className="d-none d-sm-inline-flex align-items-center gap-2 rounded-pill px-3 shadow-sm border-2 fw-semibold"
+                className="d-none d-xl-inline-flex align-items-center gap-2 rounded-pill px-3 shadow-sm border-2 fw-semibold"
                 onClick={() => setShowApplyModal(true)}
               >
                 <i className="bi bi-person-plus-fill"></i>
                 <span>Gia nhập Mentor</span>
               </Button>
+
+              {currentUser ? (
+                <Dropdown align="end">
+                  <Dropdown.Toggle
+                    as="button"
+                    className="btn btn-light rounded-pill px-3 py-1 d-flex align-items-center gap-2 border shadow-sm"
+                    id="dropdown-user-menu"
+                  >
+                    <div
+                      className="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                      style={{
+                        width: '28px',
+                        height: '28px',
+                        fontSize: '0.85rem',
+                        background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)'
+                      }}
+                    >
+                      {currentUser.fullName ? currentUser.fullName[0].toUpperCase() : 'U'}
+                    </div>
+                    <span className="fw-semibold text-dark small d-none d-sm-inline">{currentUser.fullName}</span>
+                    <Badge
+                      bg={currentUser.role === 'ROLE_ADMIN' ? 'danger' : currentUser.role === 'ROLE_MENTOR' ? 'info' : 'success'}
+                      className="rounded-pill text-uppercase"
+                      style={{ fontSize: '0.65rem' }}
+                    >
+                      {currentUser.role === 'ROLE_ADMIN' ? 'Admin' : currentUser.role === 'ROLE_MENTOR' ? 'Mentor' : 'Học Viên'}
+                    </Badge>
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu className="shadow-lg border-0 rounded-3 mt-2 py-2">
+                    <div className="px-3 py-2 border-bottom">
+                      <div className="fw-bold text-dark small">{currentUser.fullName}</div>
+                      <div className="text-muted" style={{ fontSize: '0.75rem' }}>{currentUser.email}</div>
+                    </div>
+                    <Dropdown.Item onClick={() => setShowProfileModal(true)} className="d-flex align-items-center gap-2 py-2 small">
+                      <i className="bi bi-person-circle text-primary"></i>
+                      <span>Thông tin tài khoản</span>
+                    </Dropdown.Item>
+                    {currentUser.role === 'ROLE_ADMIN' && (
+                      <Dropdown.Item onClick={onNavigateToAdmin} className="d-flex align-items-center gap-2 py-2 small text-danger fw-semibold">
+                        <i className="bi bi-shield-lock-fill"></i>
+                        <span>Quản trị hệ thống (Admin)</span>
+                      </Dropdown.Item>
+                    )}
+                    <Dropdown.Divider />
+                    <Dropdown.Item onClick={onLogout} className="d-flex align-items-center gap-2 py-2 small text-danger">
+                      <i className="bi bi-box-arrow-right"></i>
+                      <span>Đăng xuất</span>
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              ) : (
+                <div className="d-flex align-items-center gap-2">
+                  <Button
+                    variant="outline-secondary"
+                    className="rounded-pill px-3 py-1 fw-semibold small shadow-sm d-flex align-items-center gap-1 border bg-white text-dark"
+                    onClick={() => onOpenAuth('login')}
+                    id="btn-login-header"
+                  >
+                    <i className="bi bi-box-arrow-in-right text-primary"></i>
+                    <span>Đăng nhập</span>
+                  </Button>
+                  <Button
+                    variant="primary"
+                    className="rounded-pill px-3 py-1 fw-semibold small shadow-sm d-flex align-items-center gap-1"
+                    onClick={() => onOpenAuth('register')}
+                    id="btn-register-header"
+                  >
+                    <i className="bi bi-person-plus-fill"></i>
+                    <span>Đăng ký</span>
+                  </Button>
+                </div>
+              )}
+
               <Button
                 className="btn-gradient-primary rounded-pill px-3 shadow-sm d-flex align-items-center gap-2"
                 onClick={onNavigateToAdmin}
@@ -826,6 +903,13 @@ export default function HomePage({ onNavigateToAdmin }) {
           )}
         </Modal.Body>
       </Modal>
+
+      <UserProfileModal
+        show={showProfileModal}
+        onHide={() => setShowProfileModal(false)}
+        user={currentUser}
+        onLogout={onLogout}
+      />
     </div>
   )
 }
