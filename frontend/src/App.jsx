@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import HomePage from './pages/HomePage'
 import MentorManagement from './pages/MentorManagement'
 import AuthModal from './components/AuthModal'
+import AiChatbot from './components/AiChatbot'
 import { getStoredUser, fetchCurrentUser, logout } from './services/authService'
 
 export default function App() {
@@ -111,6 +112,8 @@ export default function App() {
         onHide={() => setAuthModal(prev => ({ ...prev, show: false }))}
         onSuccess={handleLoginSuccess}
       />
+
+      <AiChatbot currentUser={currentUser} />
     </>
   )
 }

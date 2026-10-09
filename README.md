@@ -58,3 +58,25 @@ Frontend: http://localhost:5173
    - Password: `123456`
    - Quyền: `ROLE_USER`
 
+## AI Agent (Google Gemini)
+
+Hệ thống tích hợp chatbot AI nổi (floating) sử dụng Google Gemini API.
+
+### Cấu hình API Key
+1. Lấy API key miễn phí tại: https://aistudio.google.com/app/apikey
+2. Mở `backend/src/main/resources/application.properties`
+3. Thay `YOUR_GEMINI_API_KEY` bằng key thực:
+   ```
+   gemini.api.key=AIza...
+   ```
+
+### Tính năng AI Agent
+- 🤖 Chatbot nổi góc phải màn hình (tất cả trang)
+- 💬 Hỗ trợ hội thoại đa lượt (multi-turn conversation)
+- ⚡ Gợi ý câu hỏi nhanh khi mở lần đầu
+- 🔄 Nút làm mới cuộc trò chuyện
+- 📱 Responsive, tương thích mobile
+- 🔒 API key bảo vệ phía backend (client không thấy key)
+
+### API mới
+- `POST /api/ai/chat` — Gửi tin nhắn, nhận phản hồi AI (Không cần xác thực)
